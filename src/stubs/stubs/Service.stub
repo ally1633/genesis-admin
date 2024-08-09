@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Services;
+
+use App\DTO\{{modelName}}DTO;
+use App\Models\{{modelName}};
+use Illuminate\Support\Collection;
+
+/**
+ * Class {{modelName}}Service.
+ */
+class {{modelName}}Service  {
+	/**
+	 * Returns a collection of all {{modelPlural}}
+	 *
+	 * @return {{modelName}}[]|Collection
+	 */
+	public function get() {
+		return {{modelName}}::query()->get();
+	}
+
+	/**
+	 * creates a new {{modelLowercase}} instance.
+	 *
+	 * @param {{modelName}}DTO $dto
+	 *
+	 *
+	 * @return {{modelName}}
+	 */
+	public function create({{modelName}}DTO $dto) {
+
+		$model = new {{modelName}}($dto->toArray());
+
+		$model->save();
+
+		return $model;
+	}
+
+	/**
+	 * update a {{modelLowercase}}
+	 *
+	 * @param int       $id
+	 * @param {{modelName}}DTO $dto
+	 *
+	 * @return {{modelName}}
+	 */
+	public function update($id, {{modelName}}DTO $dto) {
+		/**
+		 * @var {{modelName}} $model
+		 */
+		$model = {{modelName}}::query()->findOrFail($id);
+
+		$model->fill($dto->toArray());
+
+		$model->save();
+
+		return $model;
+	}
+
+	/**
+	 * delete a {{modelLowercase}}
+	 *
+	 * @param int $id
+	 *
+	 * @throws \Exception
+	 */
+	public function delete($id) {
+
+		/**
+		 * @var {{modelName}} $model
+		 */
+		$model = {{modelName}}::query()->findOrFail($id);
+
+		$model->delete();
+	}
+}

@@ -1,0 +1,22 @@
+{
+  "name": "genesis",
+  "description": "Exposes commands to create CRUD endpoints, including a dynamic dashboard",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Alexandra Cojocea",
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable" : true,
+  "require": {
+    "php": ">=7.0.0",
+    "yajra/laravel-datatables-oracle": "^9.0."
+  },
+  "autoload": {
+    "psr-4": {
+      "Genesis\\": "src/"
+    }
+  }
+}
+

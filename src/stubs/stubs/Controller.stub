@@ -1,0 +1,202 @@
+<?php
+
+namespace App\Controllers;
+
+use App\DTO\{{modelName}}DTO;
+use App\Exceptions\ApiException;
+use App\Exceptions\ValidationException;
+use App\Models\Transformers\{{modelName}}Transformer;
+use App\Services\{{modelName}}Service;
+use App\Http\Controllers\Controller;
+use Dingo\Api\Routing\Helpers;
+use Dingo\Api\Http\Response;
+use Illuminate\Http\JsonResponse;
+use Input;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException as BadRequestHttpException;
+use Validator;
+
+class {{modelName}}Controller extends Controller
+{
+	use Helpers;
+
+	private $service;
+
+	/**
+	 * {{modelName}}Controller constructor.
+	 */
+	public function __construct() {
+		$this->service = new  {{modelName}}Service();
+	}
+
+	/**
+	 * returns all {{modelPlural}}
+	 *
+	 * @SWG\Get(
+	 *      path="/api/{{modelPlural}}",
+	 *      tags={"{{modelName}}"},
+	 *      summary="get all {{modelPlural}}",
+	 *      description="will return an array of all {{modelPlural}}",
+	 *      security={{"JWT" = {}}},
+	 *
+	 *      @SWG\Response(
+	 *          response="200",
+	 *          description="all {{modelPlural}}",
+	 *          @SWG\Schema(ref="#/definitions/{{modelName}}List")
+	 *      )
+	 *  )
+	 *
+	 * @throws ApiException
+	 *
+	 * @return JsonResponse|Response
+	 */
+		public function get() {
+		$validator = Validator::make(Input::all(), [
+			//todo add parameter validation
+		]);
+
+		if ($validator->fails()) {
+			throw new ApiException(400, $validator->getMessageBag());
+		}
+
+		return $this->response->collection($this->service->get(), new {{modelName}}Transformer());
+	}
+
+	/**
+	 * create a {{modelLowercase}}
+	 *
+	 * @SWG\Post(
+	 *      path="/api/{{modelPlural}}",
+	 *      tags={"{{modelName}}"},
+	 *      summary="creates a new {{modelLowercase}}",
+	 *      security={{"JWT" = {}}},
+	 *
+	 *      @SWG\Parameter(
+	 *          name="body",
+	 *          in="body",
+	 *          required=true,
+	 *          @SWG\Schema(ref="#/definitions/Define{{modelName}}DTO")
+	 *      ),
+	 *
+	 *      @SWG\Response(response="200", description="success"),
+	 *      @SWG\Response(response="400", description="bad request"),
+	 *      @SWG\Response(response="500", description="internal server error")
+	 *  )
+	 *
+	 * @throws BadRequestHttpException
+	 * @throws \App\Exceptions\ValidationException
+	 * @throws ApiException
+	 */
+	public function create() {
+		$validator = Validator::make(Input::all(),[
+{{validation}}
+		], [
+		//todo add error message for  ids if necessary
+	]);
+
+		if ($validator->fails()) {
+			throw new ApiException(400, $validator->getMessageBag());
+		}
+
+		$model = $this->service->create(new {{modelName}}DTO(Input::all()));
+
+		return $this->response->item($model, new {{modelName}}Transformer());
+	}
+
+	/**
+	 * @param int $id
+	 *
+	 * @SWG\Put(
+	 *      path="/api/{{modelPlural}}/{id}",
+	 *      tags={"{{modelName}}"},
+	 *      summary="updates a specific {{modelLowercase}}",
+	 *      security={{"JWT" = {}}},
+	 *
+	 *      @SWG\Parameter(
+	 *          name="id",
+	 *          in="path",
+	 *          type="integer",
+	 *          required=true
+	 *      ),
+	 *
+	 *      @SWG\Parameter(
+	 *          name="body",
+	 *          in="body",
+	 *          @SWG\Schema(ref="#/definitions/Define{{modelName}}DTO")
+	 *      ),
+	 *
+	 *      @SWG\Response(response="200", description="success"),
+	 *      @SWG\Response(response="400", description="bad request"),
+	 *      @SWG\Response(response="403", description="forbidden"),
+	 *      @SWG\Response(response="404", description="alert not found"),
+	 *      @SWG\Response(response="500", description="internal server error")
+	 *  )
+	 *
+	 * @throws BadRequestHttpException
+	 * @throws ValidationException
+	 * @throws ApiException
+	 *
+	 * @return JsonResponse|Response
+	 */
+	public function update($id) {
+		$validator = Validator::make(array_merge(Input::all(), ['id' => $id]), [
+			'id' => 'required|integer|exists:{{tableName}},uuid',
+{{validation}}
+		], [
+			'id.exists' => 'the {{modelLowercase}} was not found',
+			//todo add error message for other ids if necessary
+		]);
+
+		if ($validator->fails()) {
+			throw new ApiException(400, $validator->getMessageBag());
+		}
+
+		$model = $this->service->update($id, new {{modelName}}DTO(Input::all()));
+
+		return $this->response->item($model, new {{modelName}}Transformer());
+	}
+
+	/**
+	 * deletes a {{modelLowercase}}
+	 *
+	 * @param int $id
+	 *
+	 * @SWG\Delete(
+	 *      path="/api/{{modelPlural}}/{id}",
+	 *      tags={"{{modelName}}"},
+	 *      summary="deletes a {{modelLowercase}}",
+	 *      security={{"JWT" = {}}},
+	 *
+	 *      @SWG\Parameter(
+	 *          name="id",
+	 *          in="path",
+	 *          type="integer",
+	 *          required=true
+	 *      ),
+	 *
+	 *      @SWG\Response(response="200", description="success"),
+	 *      @SWG\Response(response="403", description="forbidden"),
+	 *      @SWG\Response(response="404", description="alert not found"),
+	 *      @SWG\Response(response="500", description="internal server error")
+	 *  )
+	 *
+	 * @throws \Exception
+	 *
+	 * @return JsonResponse
+	 */
+	public function delete($id) {
+		$validator = Validator::make(['id' => $id], [
+			'id' => 'required|integer|exists:{{tableName}},uuid',
+		], [
+			'id.exists' => 'the {{modelLowercase}} was not found',
+		]);
+
+		if ($validator->fails()) {
+			throw new ApiException(400, $validator->getMessageBag());
+		}
+
+		$this->service->delete($id);
+
+		return new JsonResponse(['success' => true]);
+	}
+
+}

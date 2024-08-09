@@ -1,0 +1,30 @@
+<?php
+
+namespace App\DTO;
+
+/**
+ * Class {{modelName}}DTO.
+ *
+ * @SWG\Definition(
+ *     definition="{{modelName}}DTO",
+{{dtoColumnsSwagger}}
+ * )
+ *
+ * @SWG\Definition(
+ *     definition="{{modelName}}List",
+ *     @SWG\Property(
+ *         property="data",
+ *         type="array",
+ *         @SWG\Items(ref="#/definitions/{{modelName}}DTO")
+ *     ),
+ * )
+ * @SWG\Definition(
+ *     definition="Define{{modelName}}DTO",
+{{dtoColumnsSwaggerRequiredDefinition}}
+ *     required={{{dtoColumnsSwaggerRequired}}}
+ * )
+ *
+ * */
+class {{modelName}}DTO extends BaseDTO {
+	{{dtoColumns}}
+}

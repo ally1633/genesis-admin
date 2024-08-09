@@ -1,0 +1,13 @@
+<?php
+
+namespace App\Models\Transformers;
+
+use App\Models\{{modelName}};
+use League\Fractal\TransformerAbstract;
+
+class {{modelName}}Transformer extends TransformerAbstract {
+	public function transform({{modelName}} $model) {
+
+		return [{{returnData}}];
+	}
+}

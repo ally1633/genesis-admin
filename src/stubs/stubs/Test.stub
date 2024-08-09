@@ -1,0 +1,153 @@
+<?php
+
+namespace Tests\Unit;
+
+use App\DTO\{{modelName}}DTO;
+use App\Models\{{modelName}};
+use App\Services\{{modelName}}Service;
+use Carbon\Carbon;
+use App\Traits\RefreshDatabase;
+use Illuminate\Support\Str;
+use Tests\TestCase;
+
+class {{modelName}}ServiceTest extends TestCase {
+	use RefreshDatabase;
+
+	/**
+	 * @var {{modelName}}Service
+	 */
+	private $service;
+
+	public function setUp(): void {
+		parent::setUp();
+
+		$this->service = new {{modelName}}Service();
+	}
+
+
+	/**
+	 * tests the return of all {{modelLowercase}}s
+	 *
+	 * @covers ::get
+	 *
+	 * @throws \Exception
+	 */
+	public function testGet() {
+
+		$dto = new {{modelName}}DTO([
+{{dtoColumnsRandom}}
+		]);
+
+		$this->service->create($dto);
+
+		$data = $this->service->get();
+
+		$size = {{modelName}}::query()->get()->count();
+
+		$this->assertTrue(1 == $size, 'more then one {{modelLowercase} saved at one time');
+
+		foreach ($data as ${{modelLowercase}}) {
+{{createAssertColumns}};
+		}
+	}
+
+	/**
+	 * tests the creation of a {{modelLowercase}}.
+	 *
+	 * @covers ::create
+	 * @coversDefaultClass \App\Services\{{modelName}}Service
+	 *
+	 * @throws \App\Exceptions\ValidationException
+	 */
+	public function testCreate() {
+		$dto = new {{modelName}}DTO([
+{{dtoColumnsRandom}}
+		]);
+
+		${{modelLowercase}} = $this->service->create($dto);
+
+		$this->assertTrue(${{modelLowercase}} instanceof {{modelName}}, 'incorrect class');
+{{createAssertColumns}};
+
+
+		$size = {{modelName}}::query()->get()->count();
+
+		$this->assertTrue(1 == $size, 'more then one {{modelLowercase} saved at one time');
+
+		/**
+		 * @var {{modelName}} $modelInDb
+		 */
+		$modelInDb = {{modelName}}::query()->get()->first();
+{{modelAssertColumns}};
+	}
+
+	/**
+	 * tests the updating of a {{modelLowercase}}.
+	 *
+	 * @dataProvider updateDataProvider
+	 * @covers ::update
+	 *
+	 * @throws \App\Exceptions\ValidationException
+	 */
+	public function testUpdate({{updateParameterColumns}}) {
+		$dto = new {{modelName}}DTO([
+{{dtoColumnsRandom}}
+		]);
+
+		$original{{modelName}} = $this->service->create($dto);
+
+		$id = $original{{modelName}}->id;
+
+		$updatedDto = new {{modelName}}DTO([
+{{dtoColumnsParticular}}
+		]);
+
+		${{modelLowercase}} = $this->service->update($id, $updatedDto);
+
+		$this->assertTrue(${{modelLowercase}} instanceof {{modelName}}, 'incorrect class');
+{{updateAssertColumns}}
+
+		$size = {{modelName}}::query()->get()->count();
+
+		$this->assertTrue(1 == $size, 'more then one {{modelLowercase} updated at one time');
+
+		/**
+		 * @var {{modelName}} $modelInDb
+		 */
+		$modelInDb = {{modelName}}::query()->get()->first();
+{{modelAssertColumns}}
+	}
+
+	/**
+	 * tests the deletion of a {{modelLowercase}}.
+	 *
+	 * @covers ::delete
+	 *
+	 * @throws \App\Exceptions\ValidationException
+	 * @throws \Exception
+	 */
+	public function testDelete() {
+		$dto = new {{modelName}}DTO([
+{{dtoColumnsRandom}}
+		]);
+
+		${{modelLowercase}} = $this->service->create($dto);
+
+		$id = ${{modelLowercase}}->id;
+
+		$this->service->delete($id);
+
+		$deletedInstance = {{modelName}}::query()->find($id);
+
+		$this->assertTrue(null === $deletedInstance, '{{modelName}} was not deleted');
+	}
+
+	/**
+	 * @return array
+	 */
+	public function updateDataProvider() {
+		return [
+			[], //todo add data provider values
+		];
+	}
+}

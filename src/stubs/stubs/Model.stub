@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Models;
+
+use Carbon\Carbon;
+use DB;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+/**
+ * Class {{modelName}}
+ *
+ {{columns}}
+ *
+ * RELATIONS
+ * @property Model $belongsModel
+ * @property Collection|Model[] $hasManyModel
+ */
+class {{modelName}} extends Model
+{
+	protected $table = '{{tableName}}';
+
+	protected $fillable = [{{fillable}}];
+
+	protected $dates = [{{dates}}];
+
+
+	{{relations}}
+
+	public static function getTableColumns()
+	{
+		return [
+			{{columnData}}
+		];
+	}
+
+	public static function getDropdownData()
+	{
+		$valueColumn = 'id';
+		$labelColumn = 'name';
+		return DB::table('{{tableName}}')->select($labelColumn.' as label',$valueColumn.' as value')->get();
+	}
+}
+
+{{relationsForLinkedModel}}
